@@ -8,7 +8,13 @@ const {
     deleteBootcamp
 } =require('../controllers/bootcamps')
 
+//Include other resourse router
+const courseRouter=require('./courses');
+
 const router=express.Router();
+
+//re-route into other resourse router
+router.use('/:bootcampId/courses',courseRouter)
 
 router.route('/').get(getBootcamps);
 router.route('/:id').get(getBootcamp);
