@@ -2,8 +2,9 @@ const express= require('express');
 const dotenv=require('dotenv');
 const logger=require('./middleware/logger')
 const morgan=require('morgan');
-var colors = require('colors');
-const bootcamps=require('./routes/bootcamps')
+const colors = require('colors');
+const errorHandler=require('./middleware/error');
+const bootcamps=require('./routes/bootcamps');
 const connectDB=require('./config/db')
 
 //load env variable
@@ -24,6 +25,8 @@ if(process.env.NODE_ENV==="developement"){
 
 // mount router
 app.use('/api/v1/bootcamps',bootcamps)
+
+app.use(errorHandler)
 
 const PORT= process.env.PORT || 5000;
 
