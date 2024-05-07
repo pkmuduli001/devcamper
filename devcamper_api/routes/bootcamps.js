@@ -8,20 +8,30 @@ const {
     deleteBootcamp
 } =require('../controllers/bootcamps')
 
+const Bootcamp=require('../models/Bootcamp')
+const advancedResults=require('../middleware/advancedResults')
+const { protect,authorize } = require('../middleware/auth');
+
 //Include other resourse router
 const courseRouter=require('./courses');
+const reviewRouter=require('./reviews');
+
 
 const router=express.Router();
 
 //re-route into other resourse router
 router.use('/:bootcampId/courses',courseRouter)
+router.use('/:bootcampId/reviews',reviewRouter)
 
-router.route('/').get(getBootcamps);
-router.route('/:id').get(getBootcamp);
+router.route('/')
+.get(advancedResults(Bootcamp,'courses'),getBootcamps)
+.post(protect,authorize('publisher','admin'),createBootcamp);
 
-router.route('/').post(createBootcamp);
-router.route('/:id').put(updateBootcamp);
-router.route('/:id').delete(deleteBootcamp);
+
+router.route('/:id')
+.get(getBootcamp)
+.put(protect,authorize('publisher','admin'),updateBootcamp)
+.delete(protect,authorize('publisher','admin'),deleteBootcamp);
 
 
 module.exports=router;
